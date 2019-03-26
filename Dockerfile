@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 
 ENV DEBEMAIL="test@example.com" \
     DEBFULLNAME="John Doe" \
@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     quilt \
     build-essential \
     dput \
+    vim \
     locales \
     openssh-client \
     ca-certificates \
@@ -26,6 +27,9 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     echo 'LANG="en_US.UTF-8"'>/etc/default/locale && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=en_US.UTF-8
+
+# Add backports repo
+RUN echo 'deb http://cloudfront.debian.net/debian/ stretch-backports main contrib non-free' >> /etc/apt/sources.list
 
 COPY build.sh /usr/local/bin/build.sh
 RUN chmod +x /usr/local/bin/build.sh
